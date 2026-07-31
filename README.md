@@ -1,2 +1,2 @@
-# Personal-Pettagam
+# Personal Pettagam
 An application to store and manage information on home inventory, family members details, etc...
