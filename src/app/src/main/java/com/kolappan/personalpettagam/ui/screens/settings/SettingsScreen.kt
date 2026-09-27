@@ -65,11 +65,6 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 text = "Settings",
                 style = MaterialTheme.typography.headlineLarge
             )
-            Text(
-                text = "App preferences and configurations",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
 
             Spacer(modifier = Modifier.height(8.dp))
 

@@ -22,7 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import com.kolappan.personalpettagam.ui.screens.FamilyScreen
+import com.kolappan.personalpettagam.ui.screens.family.FamilyScreen
 import com.kolappan.personalpettagam.ui.screens.HomeScreen
 import com.kolappan.personalpettagam.ui.screens.settings.SettingsScreen
 import com.kolappan.personalpettagam.ui.theme.PersonalPettagamTheme

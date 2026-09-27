@@ -1,4 +1,4 @@
-package com.kolappan.personalpettagam.ui.screens
+package com.kolappan.personalpettagam.ui.screens.family
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -22,14 +21,29 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kolappan.personalpettagam.enums.FamilyMember
 import com.kolappan.personalpettagam.ui.theme.PersonalPettagamTheme
 
 @Composable
 fun FamilyScreen(modifier: Modifier = Modifier) {
+    var showAddDialog by remember { mutableStateOf(false) }
+    val members = remember {
+        mutableStateListOf(
+            FamilyMember("John Doe", "Self"),
+            FamilyMember("Family Member 1", "Spouse"),
+            FamilyMember("Family Member 2", "Daughter")
+        )
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -40,11 +54,6 @@ fun FamilyScreen(modifier: Modifier = Modifier) {
         Text(
             text = "Family",
             style = MaterialTheme.typography.headlineLarge
-        )
-        Text(
-            text = "Manage shared family records and members",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -70,12 +79,12 @@ fun FamilyScreen(modifier: Modifier = Modifier) {
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Family Vault",
+                        text = "Family Settings",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Text(
-                        text = "Shared documents and essential info accessible to your family.",
+                        text = "Manage family members and view information by each member",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -92,7 +101,7 @@ fun FamilyScreen(modifier: Modifier = Modifier) {
                 text = "Members",
                 style = MaterialTheme.typography.titleLarge
             )
-            FilledTonalButton(onClick = { /* TODO: Add Member */ }) {
+            FilledTonalButton(onClick = { showAddDialog = true }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = null,
@@ -103,49 +112,18 @@ fun FamilyScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        FamilyMemberCard(name = "Self (Owner)", role = "Primary Account")
-        FamilyMemberCard(name = "Family Member 1", role = "Editor")
-        FamilyMemberCard(name = "Family Member 2", role = "Viewer")
-    }
-}
-
-@Composable
-private fun FamilyMemberCard(
-    name: String,
-    role: String,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = name,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(32.dp)
-            )
-            Column {
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleSmall
-                )
-                Text(
-                    text = role,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+        members.forEach { member ->
+            FamilyMemberCard(name = member.name, relation = member.relation)
         }
+    }
+
+    if (showAddDialog) {
+        AddFamilyMember(
+            onDismiss = { showAddDialog = false },
+            onAdd = { name, relation ->
+                members.add(FamilyMember(name = name, relation = relation.displayName))
+            }
+        )
     }
 }
 
