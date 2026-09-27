@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,19 +29,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kolappan.personalpettagam.enums.FamilyMember
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kolappan.personalpettagam.ui.theme.PersonalPettagamTheme
 
 @Composable
-fun FamilyScreen(modifier: Modifier = Modifier) {
+fun FamilyScreen(
+    modifier: Modifier = Modifier,
+    viewModel: FamilyViewModel = viewModel()
+) {
     var showAddDialog by remember { mutableStateOf(false) }
-    val members = remember {
-        mutableStateListOf(
-            FamilyMember("John Doe", "Self"),
-            FamilyMember("Family Member 1", "Spouse"),
-            FamilyMember("Family Member 2", "Daughter")
-        )
-    }
+    val members by viewModel.members.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -112,8 +109,17 @@ fun FamilyScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        members.forEach { member ->
-            FamilyMemberCard(name = member.name, relation = member.relation)
+        if (members.isEmpty()) {
+            Text(
+                text = "No family members added yet.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+        } else {
+            members.forEach { member ->
+                FamilyMemberCard(name = member.name, relation = member.relation)
+            }
         }
     }
 
@@ -121,7 +127,7 @@ fun FamilyScreen(modifier: Modifier = Modifier) {
         AddFamilyMember(
             onDismiss = { showAddDialog = false },
             onAdd = { name, relation ->
-                members.add(FamilyMember(name = name, relation = relation.displayName))
+                viewModel.addMember(name, relation.displayName)
             }
         )
     }

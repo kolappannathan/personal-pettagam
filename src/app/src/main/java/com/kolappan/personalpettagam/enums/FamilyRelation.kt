@@ -22,8 +22,3 @@ enum class FamilyRelation(val displayName: String) {
     NIECE("Niece"),
     COUSIN("Cousin")
 }
-
-data class FamilyMember(
-    val name: String,
-    val relation: String
-)
