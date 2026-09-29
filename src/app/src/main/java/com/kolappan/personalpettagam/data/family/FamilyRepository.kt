@@ -10,7 +10,7 @@ class FamilyRepository(private val dao: FamilyMemberDao) {
     }
 
     suspend fun update(member: FamilyMemberEntity) {
-        dao.insertMember(member)
+        dao.updateMember(member)
     }
 
     suspend fun delete(member: FamilyMemberEntity) {

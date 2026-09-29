@@ -31,4 +31,16 @@ class FamilyViewModel(application: Application) : AndroidViewModel(application) 
             repository.insert(FamilyMemberEntity(name = name, relation = relation))
         }
     }
+
+    fun updateMember(member: FamilyMemberEntity) {
+        viewModelScope.launch {
+            repository.update(member)
+        }
+    }
+
+    fun deleteMember(member: FamilyMemberEntity) {
+        viewModelScope.launch {
+            repository.delete(member)
+        }
+    }
 }

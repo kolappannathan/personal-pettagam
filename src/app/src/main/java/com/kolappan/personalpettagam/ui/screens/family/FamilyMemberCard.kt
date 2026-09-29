@@ -24,9 +24,11 @@ import com.kolappan.personalpettagam.ui.theme.PersonalPettagamTheme
 fun FamilyMemberCard(
     name: String,
     relation: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
+        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
@@ -64,6 +66,6 @@ fun FamilyMemberCard(
 @Composable
 fun FamilyMemberCardPreview() {
     PersonalPettagamTheme {
-        FamilyMemberCard(name = "John Doe", relation = "Self")
+        FamilyMemberCard(name = "John Doe", relation = "Self", onClick = {})
     }
 }

@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kolappan.personalpettagam.data.family.FamilyMemberEntity
 import com.kolappan.personalpettagam.ui.theme.PersonalPettagamTheme
 
 @Composable
@@ -38,8 +39,43 @@ fun FamilyScreen(
     modifier: Modifier = Modifier,
     viewModel: FamilyViewModel = viewModel()
 ) {
-    var showAddDialog by remember { mutableStateOf(false) }
     val members by viewModel.members.collectAsStateWithLifecycle()
+    var selectedMember by remember { mutableStateOf<FamilyMemberEntity?>(null) }
+
+    if (selectedMember != null) {
+        UpdateFamilyMember(
+            modifier = modifier,
+            member = selectedMember!!,
+            onBack = { selectedMember = null },
+            onUpdate = { name, relation ->
+                viewModel.updateMember(selectedMember!!.copy(name = name, relation = relation.displayName))
+            },
+            onDelete = {
+                viewModel.deleteMember(selectedMember!!)
+            }
+        )
+    } else {
+        FamilyScreen(
+            modifier = modifier,
+            members = members,
+            onAddMember = { name, relation ->
+                viewModel.addMember(name, relation)
+            },
+            onMemberClick = { member ->
+                selectedMember = member
+            }
+        )
+    }
+}
+
+@Composable
+fun FamilyScreen(
+    modifier: Modifier = Modifier,
+    members: List<FamilyMemberEntity>,
+    onAddMember: (String, String) -> Unit,
+    onMemberClick: (FamilyMemberEntity) -> Unit
+) {
+    var showAddDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -118,7 +154,11 @@ fun FamilyScreen(
             )
         } else {
             members.forEach { member ->
-                FamilyMemberCard(name = member.name, relation = member.relation)
+                FamilyMemberCard(
+                    name = member.name,
+                    relation = member.relation,
+                    onClick = { onMemberClick(member) }
+                )
             }
         }
     }
@@ -127,7 +167,7 @@ fun FamilyScreen(
         AddFamilyMember(
             onDismiss = { showAddDialog = false },
             onAdd = { name, relation ->
-                viewModel.addMember(name, relation.displayName)
+                onAddMember(name, relation.displayName)
             }
         )
     }
@@ -137,6 +177,13 @@ fun FamilyScreen(
 @Composable
 fun FamilyScreenPreview() {
     PersonalPettagamTheme {
-        FamilyScreen()
+        FamilyScreen(
+            members = listOf(
+                FamilyMemberEntity(name = "John Doe", relation = "Father"),
+                FamilyMemberEntity(name = "Jane Doe", relation = "Mother")
+            ),
+            onAddMember = { _, _ -> },
+            onMemberClick = {}
+        )
     }
 }
